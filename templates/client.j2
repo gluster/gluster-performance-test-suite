@@ -1,0 +1,6 @@
+{% for item in groups['cluster_clients'] %}
+{% for i in range( number_of_threads_on_each_client ) %}
+{{ item }} /gluster-mount /usr/bin/iozone
+{% endfor %}
+{% endfor %}
+

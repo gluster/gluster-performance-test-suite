@@ -1,0 +1,51 @@
+---
+- name: Add EPEL repository
+  yum_repository:
+    name: epel
+    description: EPEL YUM repo
+    mirrorlist: https://mirrors.fedoraproject.org/mirrorlist?repo=epel-7&arch=$basearch
+    enabled: yes
+    gpgcheck: no
+    keepalive: yes
+
+- name: Install wget
+  yum:
+    name: [ 'wget' , 'createrepo' ]
+    state: present
+  retries: 10
+  delay: 5
+
+- name: delete the directory 
+  file:
+    path: "{{ tempdir }}"
+    state: absent
+
+- name: create the directory 
+  file:
+    path: "{{ tempdir }}"
+    state: directory
+    mode: '0755'
+
+- name: Download rpms
+  shell:
+    cmd: wget -P "{{ tempdir }}" -r --no-parent -A '*'  "{{ custom_build_url }}"
+    chdir: "{{ tempdir }}"
+  args:
+    warn: false
+
+- name: Move all the rpms to a folder having static name
+  shell:
+    cmd: find "{{ tempdir }}" -iname "*.rpm" -exec mv {} "{{ tempdir }}" \;
+
+- name: Create local repository
+  shell:
+    cmd: createrepo "{{ tempdir }}"
+
+- name: Configure local repo
+  yum_repository:
+    name: "glusterlocal"
+    description: "repository for custom build of glusterfs"
+    baseurl: "file://{{ tempdir }}/"
+    gpgcheck: false
+    repo_gpgcheck: false
+    enabled: 1

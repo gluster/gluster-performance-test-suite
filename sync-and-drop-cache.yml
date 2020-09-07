@@ -1,0 +1,11 @@
+---
+- name: Sync and Drop cache from all the machines 
+  hosts: cluster_machines
+  remote_user: root
+  tasks:
+
+    - shell:
+        cmd: sync
+
+    - shell:
+        cmd: echo 3 > /proc/sys/vm/drop_caches

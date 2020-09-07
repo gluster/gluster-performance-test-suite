@@ -1,0 +1,3 @@
+---
+tempdir: "/tmp/downloaded-gluster-rpms"
+custom_build_url: "https://download.gluster.org/pub/gluster/glusterfs/8/8.1/Fedora/fedora-32/x86_64/"

@@ -6,7 +6,7 @@ This will configure gluster on designated machines and execute a performance tes
 Requirements
 ------------
 
-At Minimum three Servers and one client. A control machine from where we would be executing the ansible script. Packages gluster.infra, gluster.cluster should be present on control machine. The user executing this script has to have an ssh key configured. Python3 should be existing on the target machines.
+At minimum three Servers and one client. A control machine from where we would be executing the ansible script. Packages gluster.infra, gluster.cluster should be present on control machine. The user executing this script has to have an ssh key configured. Python3 should be existing on the target machines.
 
 Role Variables
 --------------

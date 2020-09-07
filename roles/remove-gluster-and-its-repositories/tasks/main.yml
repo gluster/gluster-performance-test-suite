@@ -1,0 +1,39 @@
+---
+- name: Stop Gluster Service
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+  ignore_errors: yes
+  with_items:
+   - 'glusterd'
+
+- name: Remove Gluster and additional packages from servers
+  yum:
+    name: ['python3', 'policycoreutils-python', 'glusterfs-server', 'glusterfs-fuse', 'glusterfs-api' ]
+    state: absent
+    autoremove: yes
+  retries: 10
+  delay: 5
+
+- name: Recursively remove directories
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /var/log/glusterfs/
+    - /var/lib/glusterd/
+    - /var/run/gluster/
+
+- name: Remove Upstream and custom repository
+  yum_repository:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - epel
+    - gluster-nightly-master
+    - glusterlocal
+
+- name: clean metadata
+  command: yum clean metadata
+  args:
+    warn: no 

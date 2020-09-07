@@ -1,0 +1,174 @@
+---
+- name: Setup passwordless ssh from control machine to cluster
+  hosts: control
+  remote_user: root
+  roles:
+    - setup-control-machine-connectivity-to-cluster
+
+- name: Unmount glusterfs from clients
+  hosts: cluster_clients
+  user: root
+  tasks:
+    - mount:
+        path: /gluster-mount
+        state: unmounted
+
+- name: Check if gluster is installed
+  hosts: cluster_servers
+  user: root
+  tasks:
+    - shell: command -v gluster >/dev/null 2>&1
+      register: is_gluster_present
+      ignore_errors: yes
+    - debug: msg="{{ is_gluster_present.rc }}" 
+          
+- name: Cleanup delete gluster volume and lv 
+  remote_user: root
+  hosts: cluster_servers
+  vars_files:
+    - cleanup_vars.yml
+  pre_tasks:
+    - name: Delete Gluster volume(s)
+      gluster_volume:
+         state: absent
+         name: "{{ item }}"
+      ignore_errors: yes
+      with_items: "{{ gluster_volumes }}"
+      run_once: true
+      when: is_gluster_present.rc == 0
+  roles:
+    - { role: gluster.infra, when: is_gluster_present.rc == 0 }
+
+- name: Common setup on gluster machines for upstream
+  hosts: cluster_machines
+  remote_user: root
+  roles:
+    - common-setup
+
+- name: Remove gluster and its repositories 
+  hosts: cluster_machines
+  remote_user: root
+  roles:
+    - remove-gluster-and-its-repositories
+
+- name: Setup upstream repository
+  hosts: cluster_machines
+  remote_user: root
+  roles:
+    - { role: setup-upstream-repo, when: build == "upstream" }
+
+- name: Setup custom build repository
+  hosts: cluster_machines
+  remote_user: root
+  roles:
+    - { role: setup-custom-build-repo, when: build == "custom" }
+
+- name: Install and start gluster
+  hosts: cluster_machines
+  remote_user: root
+  roles:
+    - install-and-start-gluster
+
+- name: Client specific setup on gluster machines
+  hosts: cluster_clients
+  remote_user: root
+  roles:
+    - gluster-client-setup
+
+- name: Setting up backend and creating a volume
+  remote_user: root
+  hosts: cluster_servers
+  vars:
+     # Firewall setup
+     gluster_infra_fw_ports:
+       - 2049/tcp
+       - 54321/tcp
+       - 5900/tcp
+       - 5900-6923/tcp
+       - 5666/tcp
+       - 16514/tcp
+     gluster_infra_fw_services:
+       - glusterfs
+       - samba
+
+     # Set a disk type, Options: JBOD, RAID6, RAID10
+     gluster_infra_disktype: JBOD
+
+     # RAID6 and RAID10 diskcount (Needed only when disktype is raid)
+     gluster_infra_diskcount: 10
+     # Stripe unit size always in KiB
+     gluster_infra_stripe_unit_size: 128
+
+     # Variables for creating volume group
+     gluster_infra_volume_groups:
+       - { vgname: 'GLUSTER_vg1', pvname: '/dev/sdb' }
+       - { vgname: 'GLUSTER_vg2', pvname: '/dev/sdc' }
+       - { vgname: 'GLUSTER_vg3', pvname: '/dev/sdd' }
+
+     # Create thinpools
+     gluster_infra_thinpools:
+       - {vgname: 'GLUSTER_vg1', thinpoolname: 'GLUSTER_pool1', thinpoolsize: '896G', poolmetadatasize: '16G'}
+       - {vgname: 'GLUSTER_vg2', thinpoolname: 'GLUSTER_pool2', thinpoolsize: '896G', poolmetadatasize: '16G'}
+       - {vgname: 'GLUSTER_vg3', thinpoolname: 'GLUSTER_pool3', thinpoolsize: '896G', poolmetadatasize: '16G'}
+
+     # Create a thin volume
+     gluster_infra_lv_logicalvols:
+       - { vgname: 'GLUSTER_vg1', thinpool: 'GLUSTER_pool1', lvname: 'GLUSTER_lv1', lvsize: '896G' }
+       - { vgname: 'GLUSTER_vg2', thinpool: 'GLUSTER_pool2', lvname: 'GLUSTER_lv2', lvsize: '896G' }  
+       - { vgname: 'GLUSTER_vg3', thinpool: 'GLUSTER_pool3', lvname: 'GLUSTER_lv3', lvsize: '896G' }
+
+     # Mount the devices
+     gluster_infra_mount_devices:
+       - { path: '/gluster/brick1', vgname: 'GLUSTER_vg1', lvname: 'GLUSTER_lv1' }
+       - { path: '/gluster/brick2', vgname: 'GLUSTER_vg2', lvname: 'GLUSTER_lv2' }
+       - { path: '/gluster/brick3', vgname: 'GLUSTER_vg3', lvname: 'GLUSTER_lv3' }      
+
+     gluster_cluster_hosts: "{{ groups['cluster_servers'] }}"
+     gluster_cluster_volume: 'testvol'
+     gluster_cluster_status: absent
+     gluster_cluster_transport: 'tcp'
+     gluster_cluster_force: 'yes'
+     gluster_cluster_bricks: '/gluster/brick1,/gluster/brick2,/gluster/brick3'
+     gluster_cluster_options:
+       diagnostics.count-fop-hits: 'on'
+       diagnostics.latency-measurement: 'on'
+       server.event-threads: '4'
+       client.event-threads: '4'
+       cluster.lookup-optimize: 'on'
+       network.inode-lru-limit: '200000'
+       performance.md-cache-timeout: '600'
+       performance.cache-invalidation: 'on'
+       performance.stat-prefetch: 'on'
+       features.cache-invalidation-timeout: '600'
+       features.cache-invalidation: 'on'
+       nfs.disable: 'off'
+
+  roles:
+     - gluster.infra
+     - gluster.cluster
+
+- name: Mount gluster volume on all the clients 
+  hosts: cluster_clients
+  remote_user: root
+  gather_facts: true
+  tasks:
+    - mount:
+        path: /gluster-mount
+        src: "{{ should_mount_from }}:/testvol"
+        fstype: glusterfs
+        state: mounted
+
+- name: Install performance benchmarking tools
+  hosts: cluster_clients
+  remote_user: root
+  roles:
+    - { role: install-perf-benchmarking-tools, when: benchmarking_tools == 1 }
+
+- name: Execute perf test and get results
+  hosts: master_client
+  remote_user: root
+  environment:
+    CLIENT: "{{groups['cluster_clients']}}"
+  roles:
+    - execute-perf-and-get-results
+
