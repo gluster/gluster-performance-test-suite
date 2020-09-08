@@ -1,4 +1,4 @@
-# Running perfromance test suite.
+# Running performance test suite.
 
 Please follow the below steps to run the performance test on your cluster:
 
