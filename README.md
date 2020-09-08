@@ -28,7 +28,7 @@ https://github.com/gluster/gluster-ansible-cluster
 Usage 
 ------
 
-$ ansible-playbook -i hosts perftest.yml
+[Please refere to configuring and running performance test suite](Executing-Perf-Test.md)
 
 License
 -------
