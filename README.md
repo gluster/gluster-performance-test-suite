@@ -1,4 +1,4 @@
-Gluster Performace
+Gluster Performance
 ===================
 
 This will configure gluster on designated machines and execute a performance test on it
@@ -16,6 +16,9 @@ Role Variables
 | gluster_cluster_disperse_count     | UNDEF     | Disperse count for the volume. If this value is specified, a dispersed volume will be created |
 | gluster_cluster_replica_count     | UNDEF     | Replica count while creating a volume. Currently replica 3 is supported.|
 | node0     | UNDEF     | one of the nodes of the cluster where profile info will be collected|
+| build     | UNDEF     | Which build to use for performance test it can be upstream or custom. In case of custom build you also need to provide a url of the custom build |
+| custom_build_url    | points to v8.1     | Url of the custom build to be used for perf test |
+
 
 Dependencies
 ------------
