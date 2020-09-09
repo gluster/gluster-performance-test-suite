@@ -2,7 +2,9 @@
 
 Please follow the below steps to run the performance test on your cluster:
 
-1. Edit the hosts file and replace serverN.example.com and clientN.example.com with your machine names. 
+1. Make sure that gluster-ansible is installed on the control machine. 
+
+2. Edit the hosts file and replace serverN.example.com and clientN.example.com with your machine names. 
 
 ```
 $ cat hosts 
@@ -39,7 +41,7 @@ cluster_clients
 
 ```
 
-2. Create a vault file at GlusterPerformanceTestSuite/group_vars/all/ containing you test machines root password. Note the below command will ask you to set password for your valut file. 
+3. Create a vault file at GlusterPerformanceTestSuite/group_vars/all/ containing you test machines root password. Note the below command will ask you to set password for your valut file. 
 
 ```
 # cd GlusterPerformanceTestSuite/group_vars/all/
@@ -54,13 +56,13 @@ In the editor opened write the below lines replace secret with your cluster mach
 vault_machine_pass: secret
 ```
 
-3. For the script to be able to use this variable we need to create the following file, on the control machine. Please replace "vault-pass" with your vault file password.
+4. For the script to be able to use this variable we need to create the following file, on the control machine. Please replace "vault-pass" with your vault file password.
 
 ```
 # echo "vault-pass"  > ~/.vault_pass.txt
 ```
 
-4. Edit the perf.yml to replace the disk and its size information with, your disk and its size. In the below example I have used /dev/sdb which is a 1TB disk and for which I have given 896G to my thin pool and logical volume. I have also allocated 16 GB for its metadata. 
+5. Edit the perf.yml to replace the disk and its size information with, your disk and its size. In the below example I have used /dev/sdb which is a 1TB disk and for which I have given 896G to my thin pool and logical volume. I have also allocated 16 GB for its metadata. 
 
 ```
  # Variables for creating volume group
@@ -77,7 +79,7 @@ gluster_infra_lv_logicalvols:
     
 ```
 
-5. Run the ansible script as follows, from your control machine:
+6. Run the ansible script as follows, from your control machine:
 
 ```
 $ ansible-playbook -i hosts perftest.yml
