@@ -1,5 +1,5 @@
 ---
-- name: Sync and Drop cache from all the machines 
+- name: Sync and Drop cache from all the machines
   hosts: cluster_machines
   remote_user: root
   tasks:

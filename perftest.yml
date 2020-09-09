@@ -20,9 +20,9 @@
     - shell: command -v gluster >/dev/null 2>&1
       register: is_gluster_present
       ignore_errors: yes
-    - debug: msg="{{ is_gluster_present.rc }}" 
-          
-- name: Cleanup delete gluster volume and lv 
+    - debug: msg="{{ is_gluster_present.rc }}"
+
+- name: Cleanup delete gluster volume and lv
   remote_user: root
   hosts: cluster_servers
   vars_files:
@@ -39,13 +39,13 @@
   roles:
     - { role: gluster.infra, when: is_gluster_present.rc == 0 }
 
-- name: Common setup on gluster machines for upstream
+- name: Common setup on gluster machines
   hosts: cluster_machines
   remote_user: root
   roles:
     - common-setup
 
-- name: Remove gluster and its repositories 
+- name: Remove gluster and its repositories
   hosts: cluster_machines
   remote_user: root
   roles:
@@ -64,7 +64,7 @@
     - { role: setup-custom-build-repo, when: build == "custom" }
 
 - name: Install and start gluster
-  hosts: cluster_machines
+  hosts: cluster_servers
   remote_user: root
   roles:
     - install-and-start-gluster
@@ -114,7 +114,7 @@
      # Create a thin volume
      gluster_infra_lv_logicalvols:
        - { vgname: 'GLUSTER_vg1', thinpool: 'GLUSTER_pool1', lvname: 'GLUSTER_lv1', lvsize: '896G' }
-       - { vgname: 'GLUSTER_vg2', thinpool: 'GLUSTER_pool2', lvname: 'GLUSTER_lv2', lvsize: '896G' }  
+       - { vgname: 'GLUSTER_vg2', thinpool: 'GLUSTER_pool2', lvname: 'GLUSTER_lv2', lvsize: '896G' }
        - { vgname: 'GLUSTER_vg3', thinpool: 'GLUSTER_pool3', lvname: 'GLUSTER_lv3', lvsize: '896G' }
 
      # Mount the devices
@@ -147,7 +147,7 @@
      - gluster.infra
      - gluster.cluster
 
-- name: Mount gluster volume on all the clients 
+- name: Mount gluster volume on all the clients
   hosts: cluster_clients
   remote_user: root
   gather_facts: true

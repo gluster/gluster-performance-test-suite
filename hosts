@@ -5,6 +5,7 @@ node0=server1.example.com
 build="upstream"
 #build="custom"
 #custom_build_url="https://download.gluster.org/pub/gluster/glusterfs/8/8.1/Fedora/fedora-32/x86_64/"
+benchmarking_tools=0
 
 [control]
 control_machine ansible_host=127.0.0.1 ansible_connection=local

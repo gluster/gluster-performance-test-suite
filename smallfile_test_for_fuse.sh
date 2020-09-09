@@ -39,7 +39,7 @@ ssh root@$ServerNode "echo TestStarts >> /var/log/PerfTest.log  2>&1"
 scp /tmp/collect_info.sh root@$ServerNode:/tmp/
 ssh root@$ServerNode "/tmp/collect_info.sh >> /var/log/PerfTest.log  2>&1"
 
-cd /root/ 
+cd /root/
 
 for((i=0;i<=4;i++))
 do

@@ -18,6 +18,7 @@ Role Variables
 | node0     | UNDEF     | one of the nodes of the cluster where profile info will be collected|
 | build     | UNDEF     | Which build to use for performance test it can be upstream or custom. In case of custom build you also need to provide a url of the custom build |
 | custom_build_url    | points to v8.1     | Url of the custom build to be used for perf test |
+|  benchmarking_tools   | 0     | When set it will install the benmarking tools i.e. smallfile test and izone |
 
 
 Dependencies
@@ -25,10 +26,10 @@ Dependencies
 Gluster.infra
 https://github.com/gluster/gluster-ansible-infra
 
-Gluster.cluster 
+Gluster.cluster
 https://github.com/gluster/gluster-ansible-cluster
 
-Usage 
+Usage
 ------
 
 [Please refere to configuring and running performance test suite](Executing-Perf-Test.md)

@@ -2,12 +2,12 @@
 
 Please follow the below steps to run the performance test on your cluster:
 
-1. Make sure that gluster-ansible is installed on the control machine. 
+1. Make sure that gluster-ansible is installed on the control machine.
 
-2. Edit the hosts file and replace serverN.example.com and clientN.example.com with your machine names. 
+2. Edit the hosts file and replace serverN.example.com and clientN.example.com with your machine names.
 
 ```
-$ cat hosts 
+$ cat hosts
 [all:vars]
 gluster_volumes=testvol
 gluster_cluster_replica_count=3
@@ -41,7 +41,7 @@ cluster_clients
 
 ```
 
-3. Create a vault file at GlusterPerformanceTestSuite/group_vars/all/ containing you test machines root password. Note the below command will ask you to set password for your valut file. 
+3. Create a vault file at GlusterPerformanceTestSuite/group_vars/all/ containing you test machines root password. Note the below command will ask you to set password for your valut file.
 
 ```
 # cd GlusterPerformanceTestSuite/group_vars/all/
@@ -49,7 +49,7 @@ cluster_clients
 # ansible-vault create vault
 ```
 
-In the editor opened write the below lines replace secret with your cluster machines root password. 
+In the editor opened write the below lines replace secret with your cluster machines root password.
 
 ```
 ---
@@ -62,7 +62,7 @@ vault_machine_pass: secret
 # echo "vault-pass"  > ~/.vault_pass.txt
 ```
 
-5. Edit the perf.yml to replace the disk and its size information with, your disk and its size. In the below example I have used /dev/sdb which is a 1TB disk and for which I have given 896G to my thin pool and logical volume. I have also allocated 16 GB for its metadata. 
+5. Edit the perf.yml to replace the disk and its size information with, your disk and its size. In the below example I have used /dev/sdb which is a 1TB disk and for which I have given 896G to my thin pool and logical volume. I have also allocated 16 GB for its metadata.
 
 ```
  # Variables for creating volume group
@@ -76,10 +76,21 @@ gluster_infra_thinpools:
 # Create a thin volume
 gluster_infra_lv_logicalvols:
 - { vgname: 'GLUSTER_vg1', thinpool: 'GLUSTER_pool1', lvname: 'GLUSTER_lv1', lvsize: '896G' }
-    
+
 ```
 
-6. Run the ansible script as follows, from your control machine:
+6. Update the cleanup_vars.yml with the gluster brick and volume information which needs to be deleted from the previous runs.
+
+```
+gluster_volumes: testvol
+gluster_infra_reset_mnt_paths:
+  - /gluster/brick1
+
+gluster_infra_reset_volume_groups:
+  - GLUSTER_vg1
+```
+
+7. Run the ansible script as follows, from your control machine:
 
 ```
 $ ansible-playbook -i hosts perftest.yml
@@ -90,7 +101,7 @@ $ ansible-playbook -i hosts perftest.yml
 
 ## Results
 
-Once the test is done you should be having the following files created on your control machine. 
+Once the test is done you should be having the following files created on your control machine.
 
 * fuse_and_gnfs_mount_result.txt
 * PerfTest.log
@@ -98,7 +109,7 @@ Once the test is done you should be having the following files created on your c
 You can run the small-file-result.sh to extract the results as follows:
 
 ```
-$ ./small-file-result.sh fuse_and_gnfs_mount_result.txt 
+$ ./small-file-result.sh fuse_and_gnfs_mount_result.txt
 create: 2636.48441375
 ls-l: 8807.125541
 chmod: 1736.76129275

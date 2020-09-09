@@ -15,12 +15,12 @@
   retries: 10
   delay: 5
 
-- name: delete the directory 
+- name: delete the directory
   file:
     path: "{{ tempdir }}"
     state: absent
 
-- name: create the directory 
+- name: create the directory
   file:
     path: "{{ tempdir }}"
     state: directory
