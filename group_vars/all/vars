@@ -2,4 +2,4 @@ ssh_key_filename: id_rsa
 remote_machine_username: root
 remote_machine_password: "{{ vault_machine_pass }}"
 number_of_threads_on_each_client: 4
-benchmarking_tools=0
+benchmarking_tools: 0

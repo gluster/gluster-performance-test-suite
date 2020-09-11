@@ -28,14 +28,10 @@
 
 - name: Download rpms
   shell:
-    cmd: wget -P "{{ tempdir }}" -r --no-parent -A '*'  "{{ custom_build_url }}"
+    cmd: wget -P "{{ tempdir }}" -r -nH --cut-dirs=100 --no-parent -A '*'  "{{ custom_build_url }}"
     chdir: "{{ tempdir }}"
   args:
     warn: false
-
-- name: Move all the rpms to a folder having static name
-  shell:
-    cmd: find "{{ tempdir }}" -iname "*.rpm" -exec mv {} "{{ tempdir }}" \;
 
 - name: Create local repository
   shell:

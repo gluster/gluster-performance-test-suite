@@ -9,6 +9,7 @@
   git:
     repo: 'https://github.com/bengland2/smallfile.git'
     dest: /small-files/smallfile
+    depth: 1
     version: e8e7bf5f658664d2a2b0a2f5c8c7beb4b20cd704
 
 - name: Installing Iozone
