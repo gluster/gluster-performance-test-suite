@@ -57,6 +57,15 @@
   roles:
     - { role: setup-upstream-repo, when: build == "upstream" }
 
+- name: Subscribe to RHSM
+  hosts: master_client
+  remote_user: root
+  gather_facts: no
+  vars_files:
+    - "{{ rhsm_vars }}"
+  roles:
+    - { role: gluster.repos,  when: rhsm_vars is defined }
+
 - name: Setup custom build repository
   hosts: cluster_machines
   remote_user: root

@@ -4,7 +4,7 @@ Please follow the below steps to run the performance test on your cluster:
 
 1. Make sure that gluster-ansible is installed on the control machine.
 
-2. Create a vault file at GlusterPerformanceTestSuite/group_vars/all/ containing you test machines root password. Note the below command will ask you to set password for your valut file.
+2. Create a vault file containing all the confidential information like your test machine's root password. Note the below command will ask you to set password for your valut file.
 
 ```
 # mkdir ~/config-for-cluster1
@@ -13,11 +13,14 @@ Please follow the below steps to run the performance test on your cluster:
 # ansible-vault create vault-for-cluster1.ynl=yml
 ```
 
-In the editor opened write the below lines replace secret with your cluster machines root password.
+In the editor opened write the below lines replace secret with your cluster machines root password. If you want to subscribe to rhsm repository then specify activation key or subscription password for repository. **Note:** subscribing to rhsm repository is optional if you don't want it then make sure rhsm_vars is commented in hosts file.
 
 ```
 ---
 vault_machine_pass: secret
+# If rhsm subscription is needed then specify the activation key or password here by uncommenting one of the below and giving appropriate vaule.
+#gluster_repos_activationkey: dummy_key
+#gluster_repos_password: dummy_pass
 ```
 
 3. For the script to be able to use this variable we need to create the following file, on the control machine. Please replace "vault-pass" with your vault file password.
@@ -26,11 +29,12 @@ vault_machine_pass: secret
 # echo "vault-pass"  > ~/.vault_pass.txt
 ```
 
-4. Create a copy of backend-vars.sample and cleanup-vars.sample, so that you can fill in your cluster specific data in it.
+4. Create a copy of backend-vars.sample and cleanup-vars.sample, so that you can fill in your cluster specific data in it. ( **Note:** *If single place for all variables is desired then all the variables can be put in just one file and its path specified in backendvariables, cleanupvars and rhsmvars* )
 
 ```
 # cp backend-vars.sample ~/config-for-cluster1/cluster1-backend-vars.yml
 # cp cleanup-vars.yml ~/config-for-cluster1/cluster1-cleanup-vars.yml
+# cp rhsm-vars.sample ~/config-for-cluster1/rhsm-vars.yml
 ```
 
 5. Edit backend-vars.yml file to replace the disk and its size information with, your cluster's disk and its size. In the below example I have used /dev/sdb which is a 1TB disk and for which I have given 896G to my thin pool and logical volume. I have also allocated 16 GB for its metadata.
@@ -93,7 +97,21 @@ gluster_infra_reset_volume_groups:
 
 ```
 
-7. Edit the hosts file and replace serverN.example.com and clientN.example.com with your machine names. Set the backend_variables and cleanup_vars to point to the appropriate files.
+7. In case rhsm registration is desired then update the username, password or acitvation key and repositories that need to be subscribed to. **Note** password or activation key should not be specified here it should be specified in vault file, as we did in previous step while creating vault file.
+
+```
+# cat ~/config-for-cluster1/rhsm-vars.yml
+---
+gluster_repos_username: dummy_user
+gluster_repos_rhsmrepos:
+   - rhel-7-server-rpms
+   - rh-gluster-3-for-rhel-7-server-rpms
+   - rh-gluster-3-nfs-for-rhel-7-server-rpms
+   - rhel-ha-for-rhel-7-server-rpms
+
+```
+
+8. Edit the hosts file and replace serverN.example.com and clientN.example.com with your machine names. Set the backend_variables and cleanup_vars to point to the appropriate files. Set the optional rhsm_vars if you want to subscribe to rhsm repository.
 
 ```
 $ cat ~/config-for-cluster1/hosts
@@ -107,6 +125,7 @@ build="upstream"
 benchmarking_tools=0
 backend_variables=~/config-for-cluster1/cluster1-backend-vars.yml
 cleanup_vars=~/config-for-cluster1/cluster1-cleanup-vars.yml
+#rhsm_vars=./rhsm-vars.yml
 
 [control]
 control_machine ansible_host=127.0.0.1 ansible_connection=local
@@ -134,7 +153,7 @@ cluster_clients
 ```
 
 
-8. Run the ansible script as follows, from your control machine:
+9. Run the ansible script as follows, from your control machine:
 
 ```
 # ansible-playbook  -i ~/config-for-cluster1/hosts  -e @~/config-for-cluster1/vault-for-cluster1.yml  perftest.yml
