@@ -19,6 +19,8 @@ Role Variables
 | build     | UNDEF     | Which build to use for performance test it can be upstream or custom. In case of custom build you also need to provide a url of the custom build |
 | custom_build_url    | points to v8.1     | Url of the custom build to be used for perf test |
 |  benchmarking_tools   | 0     | When set it will install the benmarking tools i.e. smallfile test and izone |
+|  backend_variables   | UNDEF     | Path to yaml file where backend variables are defined. The file backend-vars.sample from the repository, can  be copied and changed based on the disks available in your cluster. |
+|  cleanup_vars   | UNDEF     | Path to yaml file where cleanup variables are defined. The file cleanup-vars.sample from the repository, can be copied and changed based on the current configuration of your cluster. |
 
 
 Dependencies
