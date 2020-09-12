@@ -26,7 +26,7 @@
   remote_user: root
   hosts: cluster_servers
   vars_files:
-    - cleanup_vars.yml
+    - "{{ cleanup_vars }}"
   pre_tasks:
     - name: Delete Gluster volume(s)
       gluster_volume:
@@ -78,6 +78,8 @@
 - name: Setting up backend and creating a volume
   remote_user: root
   hosts: cluster_servers
+  vars_files:
+    - "{{ backend_variables }}"
   vars:
      # Firewall setup
      gluster_infra_fw_ports:
@@ -91,44 +93,10 @@
        - glusterfs
        - samba
 
-     # Set a disk type, Options: JBOD, RAID6, RAID10
-     gluster_infra_disktype: JBOD
-
-     # RAID6 and RAID10 diskcount (Needed only when disktype is raid)
-     gluster_infra_diskcount: 10
-     # Stripe unit size always in KiB
-     gluster_infra_stripe_unit_size: 128
-
-     # Variables for creating volume group
-     gluster_infra_volume_groups:
-       - { vgname: 'GLUSTER_vg1', pvname: '/dev/sdb' }
-       - { vgname: 'GLUSTER_vg2', pvname: '/dev/sdc' }
-       - { vgname: 'GLUSTER_vg3', pvname: '/dev/sdd' }
-
-     # Create thinpools
-     gluster_infra_thinpools:
-       - {vgname: 'GLUSTER_vg1', thinpoolname: 'GLUSTER_pool1', thinpoolsize: '896G', poolmetadatasize: '16G'}
-       - {vgname: 'GLUSTER_vg2', thinpoolname: 'GLUSTER_pool2', thinpoolsize: '896G', poolmetadatasize: '16G'}
-       - {vgname: 'GLUSTER_vg3', thinpoolname: 'GLUSTER_pool3', thinpoolsize: '896G', poolmetadatasize: '16G'}
-
-     # Create a thin volume
-     gluster_infra_lv_logicalvols:
-       - { vgname: 'GLUSTER_vg1', thinpool: 'GLUSTER_pool1', lvname: 'GLUSTER_lv1', lvsize: '896G' }
-       - { vgname: 'GLUSTER_vg2', thinpool: 'GLUSTER_pool2', lvname: 'GLUSTER_lv2', lvsize: '896G' }
-       - { vgname: 'GLUSTER_vg3', thinpool: 'GLUSTER_pool3', lvname: 'GLUSTER_lv3', lvsize: '896G' }
-
-     # Mount the devices
-     gluster_infra_mount_devices:
-       - { path: '/gluster/brick1', vgname: 'GLUSTER_vg1', lvname: 'GLUSTER_lv1' }
-       - { path: '/gluster/brick2', vgname: 'GLUSTER_vg2', lvname: 'GLUSTER_lv2' }
-       - { path: '/gluster/brick3', vgname: 'GLUSTER_vg3', lvname: 'GLUSTER_lv3' }      
-
      gluster_cluster_hosts: "{{ groups['cluster_servers'] }}"
-     gluster_cluster_volume: 'testvol'
      gluster_cluster_status: absent
      gluster_cluster_transport: 'tcp'
      gluster_cluster_force: 'yes'
-     gluster_cluster_bricks: '/gluster/brick1,/gluster/brick2,/gluster/brick3'
      gluster_cluster_options:
        diagnostics.count-fop-hits: 'on'
        diagnostics.latency-measurement: 'on'
