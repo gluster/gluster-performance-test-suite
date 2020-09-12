@@ -21,7 +21,9 @@ Role Variables
 |  benchmarking_tools   | 0     | When set it will install the benmarking tools i.e. smallfile test and izone |
 |  backend_variables   | UNDEF     | Path to yaml file where backend variables are defined. The file backend-vars.sample from the repository, can  be copied and changed based on the disks available in your cluster. |
 |  cleanup_vars   | UNDEF     | Path to yaml file where cleanup variables are defined. The file cleanup-vars.sample from the repository, can be copied and changed based on the current configuration of your cluster. |
+|  rhsm_vars   | UNDEF     | Path to yaml file where rhsm_vars variables are defined. The file rhsm_vars.sample from the repository, can be copied and changed. Note this is optional if you don't want to use rhsm repository then do not define this variable |
 
+### **Note:** If single place for all variables is desired then all the variables can be put in just one file and its path specified in backend_variables, cleanup_vars and rhsm_vars
 
 Dependencies
 ------------

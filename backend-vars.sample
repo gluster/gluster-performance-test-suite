@@ -29,7 +29,7 @@ gluster_infra_lv_logicalvols:
 gluster_infra_mount_devices:
   - { path: '/gluster/brick1', vgname: 'GLUSTER_vg1', lvname: 'GLUSTER_lv1' }
   - { path: '/gluster/brick2', vgname: 'GLUSTER_vg2', lvname: 'GLUSTER_lv2' }
-  - { path: '/gluster/brick3', vgname: 'GLUSTER_vg3', lvname: 'GLUSTER_lv3' }      
+  - { path: '/gluster/brick3', vgname: 'GLUSTER_vg3', lvname: 'GLUSTER_lv3' }
 
 gluster_cluster_volume: 'testvol'
 gluster_cluster_bricks: '/gluster/brick1,/gluster/brick2,/gluster/brick3'
