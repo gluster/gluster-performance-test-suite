@@ -14,23 +14,21 @@ fi
 OutputFileName=$2
 ServerNode=$1
 
+
 cat <<EOF > /tmp/collect_info.sh
 #!/bin/bash
 uname -r
-echo "cat /proc/sys/vm/dirty_ratio"
-cat /proc/sys/vm/dirty_ratio
 
-echo "cat /proc/sys/vm/dirty_background_ratio"
-cat /proc/sys/vm/dirty_background_ratio
+    Files=( "dirty_ratio" "dirty_background_ratio" "swappiness" "vfs_cache_pressure"  )
 
-echo "cat /proc/sys/vm/swappiness"
-cat /proc/sys/vm/swappiness
+    for (( i = 0; i < ${#Files[@]} ; i++ ))
+    do
+        echo "cat /proc/sys/vm/${Files[$i]}"
+        cat /proc/sys/vm/${Files[$i]}
+    done
 
-echo "cat /proc/sys/vm/vfs_cache_pressure"
-cat /proc/sys/vm/vfs_cache_pressure
-
-echo "cat /sys/block/sda/queue/scheduler"
-cat /sys/block/sda/queue/scheduler
+    echo "cat /sys/block/sda/queue/scheduler"
+    cat /sys/block/sda/queue/scheduler
 EOF
 
 chmod 755 /tmp/collect_info.sh
@@ -41,54 +39,18 @@ ssh root@$ServerNode "/tmp/collect_info.sh >> /var/log/PerfTest.log  2>&1"
 
 cd /root/
 
+Operations=( "create" "ls-l" "chmod" "stat" "read" "append" "rename" "delete-renamed" "mkdir" "rmdir" "cleanup" )
+
 for((i=0;i<=4;i++))
 do
-	logger -s "Small file test Iteration $i started" 2>> $LogFile
+    logger -s "Small file test Iteration $i started" 2>> $LogFile
 
-	ansible-playbook -i hosts sync-and-drop-cache.yml
-	python /small-files/smallfile/smallfile_cli.py --operation create --threads 8 --file-size 64 --files 5000 --top /gluster-mount  --host-set "$(echo $CLIENT | tr -d "[] \'")"
-	ssh root@$ServerNode "gluster volume profile testvol info incremental  >> /root/create-profile-fuse.txt"
-
-	ansible-playbook -i hosts sync-and-drop-cache.yml
-	python /small-files/smallfile/smallfile_cli.py --operation ls-l --threads 8 --file-size 64 --files 5000 --top /gluster-mount  --host-set "$(echo $CLIENT | tr -d "[] \'")"
-	ssh root@$ServerNode "gluster volume profile testvol info incremental  >> /root/ls-profile-fuse.txt"
-
-	ansible-playbook -i hosts sync-and-drop-cache.yml
-	python /small-files/smallfile/smallfile_cli.py --operation chmod --threads 8 --file-size 64 --files 5000 --top /gluster-mount  --host-set "$(echo $CLIENT | tr -d "[] \'")"
-	ssh root@$ServerNode "gluster volume profile testvol info incremental  >> /root/chmod-profile-fuse.txt"
-
-	ansible-playbook -i hosts sync-and-drop-cache.yml
-	python /small-files/smallfile/smallfile_cli.py --operation stat --threads 8 --file-size 64 --files 5000 --top /gluster-mount  --host-set "$(echo $CLIENT | tr -d "[] \'")"
-	ssh root@$ServerNode "gluster volume profile testvol info incremental  >> /root/stat-profile-fuse.txt"
-
-	ansible-playbook -i hosts sync-and-drop-cache.yml
-	python /small-files/smallfile/smallfile_cli.py --operation read --threads 8 --file-size 64 --files 5000 --top /gluster-mount  --host-set "$(echo $CLIENT | tr -d "[] \'")"
-	ssh root@$ServerNode "gluster volume profile testvol info incremental  >> /root/read-profile-fuse.txt"
-
-	ansible-playbook -i hosts sync-and-drop-cache.yml
-	python /small-files/smallfile/smallfile_cli.py --operation append --threads 8 --file-size 64 --files 5000 --top /gluster-mount  --host-set "$(echo $CLIENT | tr -d "[] \'")"
-	ssh root@$ServerNode "gluster volume profile testvol info incremental  >> /root/append-profile-fuse.txt"
-
-	ansible-playbook -i hosts sync-and-drop-cache.yml
-	python /small-files/smallfile/smallfile_cli.py --operation rename --threads 8 --file-size 64 --files 5000 --top /gluster-mount  --host-set "$(echo $CLIENT | tr -d "[] \'")"
-	ssh root@$ServerNode "gluster volume profile testvol info incremental  >> /root/rename-profile-fuse.txt"
-
-	ansible-playbook -i hosts sync-and-drop-cache.yml
-	python /small-files/smallfile/smallfile_cli.py --operation delete-renamed --threads 8 --file-size 64 --files 5000 --top /gluster-mount  --host-set "$(echo $CLIENT | tr -d "[] \'")"
-	ssh root@$ServerNode "gluster volume profile testvol info incremental  >> /root/delete-renamed-profile-fuse.txt"
-
-	ansible-playbook -i hosts sync-and-drop-cache.yml
-	python /small-files/smallfile/smallfile_cli.py --operation mkdir --threads 8 --file-size 64 --files 5000 --top /gluster-mount  --host-set "$(echo $CLIENT | tr -d "[] \'")"
-	ssh root@$ServerNode "gluster volume profile testvol info incremental  >> /root/mkdir-profile-fuse.txt"
-
-	ansible-playbook -i hosts sync-and-drop-cache.yml
-	python /small-files/smallfile/smallfile_cli.py --operation rmdir --threads 8 --file-size 64 --files 5000 --top /gluster-mount  --host-set "$(echo $CLIENT | tr -d "[] \'")"
-	ssh root@$ServerNode "gluster volume profile testvol info incremental  >> /root/rmdir-profile-fuse.txt"
-
-	ansible-playbook -i hosts sync-and-drop-cache.yml
-	python /small-files/smallfile/smallfile_cli.py --operation cleanup --threads 8 --file-size 64 --files 5000 --top /gluster-mount  --host-set "$(echo $CLIENT | tr -d "[] \'")"
-	ssh root@$ServerNode "gluster volume profile testvol info incremental  >> /root/cleanup-profile-fuse.txt"
-
+    for (( i = 0; i < ${#Operations[@]} ; i++ ))
+    do
+        ansible-playbook -i hosts sync-and-drop-cache.yml
+        python /small-files/smallfile/smallfile_cli.py --operation ${Operations[$i]} --threads 8 --file-size 64 --files 5000 --top /gluster-mount  --host-set "$(echo $CLIENT | tr -d "[] \'")"
+        ssh root@$ServerNode "gluster volume profile testvol info incremental  >> /root/${Operations[$i]}-profile-fuse.txt"
+    done
 done
 
 mkdir -p /root/profile-for-fuse-and-gnfs
