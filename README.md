@@ -16,8 +16,10 @@ Role Variables
 | gluster_cluster_disperse_count     | UNDEF     | Disperse count for the volume. If this value is specified, a dispersed volume will be created |
 | gluster_cluster_replica_count     | UNDEF     | Replica count while creating a volume. Currently replica 3 is supported.|
 | node0     | UNDEF     | one of the nodes of the cluster where profile info will be collected|
-| build     | UNDEF     | Which build to use for performance test it can be upstream or custom. In case of custom build you also need to provide a url of the custom build |
-| custom_build_url    | points to v8.1     | Url of the custom build to be used for perf test |
+| build     | UNDEF     | Which build to use for performance test it can be upstream or custom. In case of custom build you also need to provide one of the following : **custom_build_url,  custom_build_path, custom_build_repo_url** |
+| custom_build_url    | UNDEF     | Url of the custom build to be used for perf test |
+| custom_build_path    | UNDEF     | Local path of the rpms created |
+| custom_build_repo_url    | UNDEF     | Url of the custom build repository to be used for perf test |
 |  benchmarking_tools   | 0     | When set it will install the benmarking tools i.e. smallfile test and izone |
 |  backend_variables   | UNDEF     | Path to yaml file where backend variables are defined. The file backend-vars.sample from the repository, can  be copied and changed based on the disks available in your cluster. |
 |  cleanup_vars   | UNDEF     | Path to yaml file where cleanup variables are defined. The file cleanup-vars.sample from the repository, can be copied and changed based on the current configuration of your cluster. |

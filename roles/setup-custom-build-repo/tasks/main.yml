@@ -26,12 +26,22 @@
     state: directory
     mode: '0755'
 
-- name: Download rpms
+- name: Download rpms from custom_build_url provided
   shell:
     cmd: wget -P "{{ tempdir }}" -r -nH --cut-dirs=100 --no-parent -A '*'  "{{ custom_build_url }}"
     chdir: "{{ tempdir }}"
   args:
     warn: false
+  when: custom_build_url is defined
+
+- name: Copy custom rpms from custom_build_path to remote machine
+  copy:
+    src: "{{ custom_build_path |  regex_replace('$', '/') }}"
+    dest: "{{ tempdir }}"
+    owner: root
+    group: root
+    mode: '0644'
+  when: custom_build_path is defined
 
 - name: Create local repository
   shell:
@@ -45,3 +55,10 @@
     gpgcheck: false
     repo_gpgcheck: false
     enabled: 1
+
+- name: downloading custom repository from given build_repo_url
+  get_url:
+    url: "{{ custom_build_repo_url }}"
+    dest: /etc/yum.repos.d/CustomGluster.repo
+    mode: '0644'
+  when: custom_build_repo_url is defined

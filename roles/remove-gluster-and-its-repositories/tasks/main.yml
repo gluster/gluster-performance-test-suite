@@ -15,7 +15,7 @@
   retries: 10
   delay: 5
 
-- name: Recursively remove directories
+- name: Deleting some files and directories from previous runs
   file:
     path: "{{ item }}"
     state: absent
@@ -23,6 +23,7 @@
     - /var/log/glusterfs/
     - /var/lib/glusterd/
     - /var/run/gluster/
+    - /etc/yum.repos.d/CustomGluster.repo
 
 - name: Remove Upstream and custom repository
   yum_repository:
