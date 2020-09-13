@@ -1,11 +1,16 @@
 [all:vars]
 gluster_volumes=testvol
 gluster_cluster_replica_count=3
+#gluster_cluster_disperse_count=3
 node0=server1.example.com
 build="upstream"
 #build="custom"
 #custom_build_url="https://download.gluster.org/pub/gluster/glusterfs/8/8.1/Fedora/fedora-32/x86_64/"
+#custom_build_repo_url=
+#custom_build_path=/tmp/rpms/
 benchmarking_tools=0
+backend_variables=~/config-for-cluster1/cluster1-backend-vars.yml
+cleanup_vars=~/config-for-cluster1/cluster1-cleanup-vars.yml
 
 [control]
 control_machine ansible_host=127.0.0.1 ansible_connection=local
