@@ -11,6 +11,7 @@ build="upstream"
 benchmarking_tools=0
 backend_variables=~/config-for-cluster1/cluster1-backend-vars.yml
 cleanup_vars=~/config-for-cluster1/cluster1-cleanup-vars.yml
+#rhsm_vars=./rhsm-vars.yml
 
 [control]
 control_machine ansible_host=127.0.0.1 ansible_connection=local
@@ -27,9 +28,9 @@ server2.example.com
 server3.example.com
 
 [cluster_clients]
-client1.example.com
-client2.example.com
-client3.example.com
+client1.example.com should_mount_from=server1.example.com
+client2.example.com should_mount_from=server2.example.com
+client3.example.com should_mount_from=server3.example.com
 
 [cluster_machines:children]
 cluster_servers

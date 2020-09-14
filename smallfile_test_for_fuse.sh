@@ -41,15 +41,15 @@ cd /root/
 
 Operations=( "create" "ls-l" "chmod" "stat" "read" "append" "rename" "delete-renamed" "mkdir" "rmdir" "cleanup" )
 
-for((i=0;i<=4;i++))
+for((i=0; i<=4; i++))
 do
     logger -s "Small file test Iteration $i started" 2>> $LogFile
 
-    for (( i = 0; i < ${#Operations[@]} ; i++ ))
+    for ((j=0; j<${#Operations[@]} ; j++))
     do
         ansible-playbook -i hosts sync-and-drop-cache.yml
-        python /small-files/smallfile/smallfile_cli.py --operation ${Operations[$i]} --threads 8 --file-size 64 --files 5000 --top /gluster-mount  --host-set "$(echo $CLIENT | tr -d "[] \'")"
-        ssh root@$ServerNode "gluster volume profile testvol info incremental  >> /root/${Operations[$i]}-profile-fuse.txt"
+        python /small-files/smallfile/smallfile_cli.py --operation ${Operations[$j]} --threads 8 --file-size 64 --files 5000 --top /gluster-mount  --host-set "$(echo $CLIENT | tr -d "[] \'")"
+        ssh root@$ServerNode "gluster volume profile testvol info incremental  >> /root/${Operations[$j]}-profile-fuse.txt"
     done
 done
 

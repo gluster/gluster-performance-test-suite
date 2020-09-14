@@ -3,6 +3,22 @@
 Please follow the below steps to run the performance test on your cluster:
 
 1. Make sure that gluster-ansible is installed on the control machine.
+   you can use any of the below repositories:
+   https://copr-be.cloud.fedoraproject.org/results/sac/gluster-ansible/
+   https://download.copr.fedorainfracloud.org/results/sac/gluster-ansible/
+
+   For example, I have use the below repository for my *Fedora 32* machine:
+```
+# cat /etc/yum.repos.d/sac-gluster-ansible-fedora-32.repo
+[sac-gluster-ansible-fedora-32]
+baseurl = https://copr-be.cloud.fedoraproject.org/results/sac/gluster-ansible/fedora-32-x86_64/
+gpgkey = https://copr-be.cloud.fedoraproject.org/results/sac/gluster-ansible/pubkey.gpg
+keepalive = 1
+name = Copr repo for gluster-ansible owned by sac
+
+```
+
+
 
 2. Create a vault file containing all the confidential information like your test machine's root password. Note the below command will ask you to set password for your valut file.
 
@@ -10,10 +26,10 @@ Please follow the below steps to run the performance test on your cluster:
 # mkdir ~/config-for-cluster1
 # cd ~/config-for-cluster1
 # export EDITOR=vi
-# ansible-vault create vault-for-cluster1.ynl=yml
+# ansible-vault create vault-for-cluster1.yml
 ```
 
-In the editor opened write the below lines replace secret with your cluster machines root password. If you want to subscribe to rhsm repository then specify activation key or subscription password for repository. **Note:** subscribing to rhsm repository is optional if you don't want it then make sure rhsm_vars is commented in hosts file.
+In the editor opened write the below lines, replace secret with your cluster machines root password. If you want to subscribe to rhsm repository then specify activation key or subscription password for repository. **Note:** subscribing to rhsm repository is optional if you don't want it then make sure rhsm_vars is commented in hosts file.
 
 ```
 ---
@@ -33,7 +49,7 @@ vault_machine_pass: secret
 
 ```
 # cp backend-vars.sample ~/config-for-cluster1/cluster1-backend-vars.yml
-# cp cleanup-vars.yml ~/config-for-cluster1/cluster1-cleanup-vars.yml
+# cp cleanup-vars.sample ~/config-for-cluster1/cluster1-cleanup-vars.yml
 # cp rhsm-vars.sample ~/config-for-cluster1/rhsm-vars.yml
 ```
 
@@ -118,10 +134,13 @@ $ cat ~/config-for-cluster1/hosts
 [all:vars]
 gluster_volumes=testvol
 gluster_cluster_replica_count=3
+#gluster_cluster_disperse_count=3
 node0=server1.example.com
 build="upstream"
 #build="custom"
 #custom_build_url="https://download.gluster.org/pub/gluster/glusterfs/8/8.1/Fedora/fedora-32/x86_64/"
+#custom_build_repo_url=
+#custom_build_path=/tmp/rpms/
 benchmarking_tools=0
 backend_variables=~/config-for-cluster1/cluster1-backend-vars.yml
 cleanup_vars=~/config-for-cluster1/cluster1-cleanup-vars.yml
@@ -142,20 +161,21 @@ server2.example.com
 server3.example.com
 
 [cluster_clients]
-client1.example.com
-client2.example.com
-client3.example.com
+client1.example.com should_mount_from=server1.example.com
+client2.example.com should_mount_from=server2.example.com
+client3.example.com should_mount_from=server3.example.com
 
 [cluster_machines:children]
 cluster_servers
 cluster_clients
-
 ```
 
 
 9. Run the ansible script as follows, from your control machine:
+   **Note:** you need to run the below command from the directory where you have cloned this repository.
 
 ```
+# cd ~/Code/gluster-performance-test-suite
 # ansible-playbook  -i ~/config-for-cluster1/hosts  -e @~/config-for-cluster1/vault-for-cluster1.yml  perftest.yml
 
 ```
