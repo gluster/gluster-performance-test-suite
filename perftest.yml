@@ -35,9 +35,9 @@
       ignore_errors: yes
       with_items: "{{ gluster_volumes }}"
       run_once: true
-      when: is_gluster_present.rc == 0
+      when: is_gluster_present.rc|int == 0
   roles:
-    - { role: gluster.infra, when: is_gluster_present.rc == 0 }
+    - { role: gluster.infra, when: is_gluster_present.rc|int == 0 }
 
 - name: Common setup on gluster machines
   hosts: cluster_machines
@@ -139,7 +139,7 @@
   hosts: cluster_clients
   remote_user: root
   roles:
-    - { role: install-perf-benchmarking-tools, when: benchmarking_tools == 1 }
+    - { role: install-perf-benchmarking-tools, when: benchmarking_tools|int == 1 }
 
 - name: Execute perf test and get results
   hosts: master_client

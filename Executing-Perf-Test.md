@@ -51,6 +51,7 @@ vault_machine_pass: secret
 # cp backend-vars.sample ~/config-for-cluster1/cluster1-backend-vars.yml
 # cp cleanup-vars.sample ~/config-for-cluster1/cluster1-cleanup-vars.yml
 # cp rhsm-vars.sample ~/config-for-cluster1/rhsm-vars.yml
+# cp hosts.sample ~/config-for-cluster1/hosts
 ```
 
 5. Edit backend-vars.yml file to replace the disk and its size information with, your cluster's disk and its size. In the below example I have used /dev/sdb which is a 1TB disk and for which I have given 896G to my thin pool and logical volume. I have also allocated 16 GB for its metadata.
