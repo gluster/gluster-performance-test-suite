@@ -7,9 +7,11 @@
     group: root
     mode: '0555'
   with_items:
-    - smallfile_test_for_fuse.sh
+    - smallfile-test-for-fuse.sh
     - sync-and-drop-cache.yml
     - ansible.cfg
+    - largefile-test-for-fuse.sh
+    - collect-info.sh
 
 - name: Copy inventroy file with the name hosts
   copy:
@@ -43,25 +45,40 @@
 
 - name: delete the logs of any previous runs
   file:
-    path: /root/fuse_and_gnfs_mount_result.txt
+    path: "/root/{{ item }}"
     state: absent
   with_items:
-    - /root/fuse_and_gnfs_mount_result.txt
     - /root/PerfTest.log
-    - /root/profile-for-fuse-and-gnfs.tar
-    - /root/profile-for-fuse-and-gnfs
+    - /root/fuse-smallfile-result.txt
+    - /root/fuse-smallfile-profile
+    - /root/fuse-smallfile-profile.tar
+    - /root/fuse-largefile-result.txt
+    - /root/fuse-largefile-profile-iozone
+    - /root/fuse-largefile-profile-iozone.tar
 
-- name: Run perf test
-  shell: "/root/smallfile_test_for_fuse.sh \"{{node0}}\" /root/fuse_and_gnfs_mount_result.txt > /root/fuse_and_gnfs_mount_result.txt 2>&1"
+- name: Run smallfile test
+  shell: "/root/smallfile-test-for-fuse.sh \"{{node0}}\"  > /root/fuse-smallfile-result.txt 2>&1"
   async: 21600                                 # waiting for 6 hours for test to complete, if it finishes early poll will detect that and report
   poll: 900
   register: perf_test
+  when: tool == "smallfile"
+
+- name: Run largefile test using izone
+  shell: "/root/largefile-test-for-fuse.sh \"{{node0}}\" \"{{total_number_of_threads}}\" > /root/fuse-largefile-result.txt 2>&1"
+  async: 21600                                 # waiting for 6 hours for test to complete, if it finishes early poll will detect that and report
+  poll: 900
+  register: perf_test
+  when: tool == "iozone"
 
 - name: fetch a file from remote machine
   fetch:
     src: "{{ item }}"
-    dest: ./results/
+    dest: "{{ download_results_at_location }}/results/"
     flat: yes
   with_items:
-    - /root/fuse_and_gnfs_mount_result.txt
+    - /root/fuse-smallfile-result.txt
     - /root/PerfTest.log
+    - /root/fuse-smallfile-profile.tar
+    - /root/fuse-largefile-result.txt
+    - /root/fuse-largefile-profile-iozone.tar
+  ignore_errors: yes

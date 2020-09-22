@@ -7,7 +7,7 @@
 
 - name: Unmount glusterfs from clients
   hosts: cluster_clients
-  user: root
+  remote_user: root
   tasks:
     - mount:
         path: /gluster-mount
@@ -15,7 +15,7 @@
 
 - name: Check if gluster is installed
   hosts: cluster_servers
-  user: root
+  remote_user: root
   tasks:
     - shell: command -v gluster >/dev/null 2>&1
       register: is_gluster_present

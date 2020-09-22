@@ -188,13 +188,13 @@ cluster_clients
 
 Once the test is done you should be having the following files created on your control machine.
 
-* fuse_and_gnfs_mount_result.txt
+* fuse-smallfile-result.txt
 * PerfTest.log
 
 You can run the small-file-result.sh to extract the results as follows:
 
 ```
-$ ./small-file-result.sh fuse_and_gnfs_mount_result.txt
+$ ./small-file-result.sh fuse-smallfile-result.txt
 create: 2636.48441375
 ls-l: 8807.125541
 chmod: 1736.76129275
