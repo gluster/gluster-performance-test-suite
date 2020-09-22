@@ -1,17 +1,26 @@
 ---
 - name: Install glusterfs-fuse
   yum:
-    name: [ 'glusterfs-fuse' ]
+    name: [ 'glusterfs-fuse', 'git' ]
     state: present
   retries: 10
   delay: 5
 
 - name: Install additional packages on master client
   yum:
-    name: [ 'sshpass', 'ansible', 'git' ]
+    name: [ 'sshpass', 'ansible' ]
     state: present
   retries: 10
   delay: 5
+  when: inventory_hostname == groups['master_client'].0
+
+- name: create a symlink for rsh
+  file:
+    src: /usr/bin/ssh
+    dest: /usr/bin/rsh
+    owner: root
+    group: root
+    state: link
   when: inventory_hostname == groups['master_client'].0
 
 - name: distribute the ssh key to the remote hosts
