@@ -145,7 +145,9 @@ build="upstream"
 benchmarking_tools=0
 backend_variables=~/config-for-cluster1/cluster1-backend-vars.yml
 cleanup_vars=~/config-for-cluster1/cluster1-cleanup-vars.yml
-#rhsm_vars=./rhsm-vars.yml
+#rhsm_vars=~/config-for-cluster1/rhsm-vars.yml
+tool="smallfile"
+download_results_at_location=~/config-for-cluster1/
 
 [control]
 control_machine ansible_host=127.0.0.1 ansible_connection=local
@@ -186,15 +188,16 @@ cluster_clients
 
 ## Results
 
-Once the test is done you should be having the following files created on your control machine.
+Once the test is done you should be having the following files created on your control machine in the results directory, which was specified in the hosts file.
 
 * fuse-smallfile-result.txt
+* fuse-largefile-result.txt
 * PerfTest.log
 
 You can run the small-file-result.sh to extract the results as follows:
 
 ```
-$ ./small-file-result.sh fuse-smallfile-result.txt
+$ ./small-file-result.sh ~/config-for-cluster1/results/fuse-smallfile-result.txt
 create: 2636.48441375
 ls-l: 8807.125541
 chmod: 1736.76129275
@@ -206,4 +209,14 @@ delete-renamed: 2565.4863702
 mkdir: 795.2569932
 rmdir: 464.1749462
 cleanup: 5541.57562475
+```
+
+You can run the large-result-iozone.sh to extract the results as follows , note that here we have given the numbers of threads as 16, you can specify this as (number of clients * 4), so if you have 6 clients then the number would be 24.
+
+```
+$ ./large-result-iozone.sh ~/config-for-cluster1/results/fuse-largefile-result.txt 16
+seq-write : 62147.61
+seq-read : 228799.186
+random-write : 64242.22
+random-read : 109241.69
 ```
