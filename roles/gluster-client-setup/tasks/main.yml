@@ -22,6 +22,7 @@
     group: root
     state: link
   when: inventory_hostname == groups['master_client'].0
+  ignore_errors: yes
 
 - name: distribute the ssh key to the remote hosts
   shell: "/usr/bin/sshpass -p \"{{ remote_machine_password }}\" ssh-copy-id -f -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/{{ ssh_key_filename }}.pub  \"{{ remote_machine_username }}@{{ item }}\""
