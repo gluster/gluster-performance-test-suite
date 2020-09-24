@@ -149,3 +149,13 @@
   roles:
     - execute-perf-and-get-results
 
+- name: delete the ssh key if specifically asked
+  hosts: control_machine
+  tasks:
+    - file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - ~/.ssh/id_rsa
+        - ~/.ssh/id_rsa.pub
+      when: delete_key is defined
