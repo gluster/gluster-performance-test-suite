@@ -1,4 +1,10 @@
 ---
+- name: creating key on control machine
+  user:
+    name: "{{ control_machine_username }}"
+    generate_ssh_key: yes
+  when: control_machine_username is defined
+
 - name: distribute the ssh key to the remote hosts
   shell: "/usr/bin/sshpass -p \"{{ remote_machine_password }}\" ssh-copy-id -f -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/{{ ssh_key_filename }}.pub  \"{{ remote_machine_username }}@{{ item }}\""
   register: ssh_copy_id_execution
