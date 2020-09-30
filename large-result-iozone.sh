@@ -18,9 +18,9 @@ for key in ${!Operations[@]}
 do
     if [ "$key"  = "seq-read" ]
     then
-        grep -i "${Operations[$key]}" $1 | awk  -v ops="$key" -M -v PREC=100 -v CONVFMT=%.17g  'BEGIN{ sum = 0} {sum+=sprintf("%f",$8)} END{print ops " : " sum/NR}' >> /tmp/$$-lr
+        grep -i "${Operations[$key]}" $1 | awk  -v ops="$key"  -v PREC=100 -v CONVFMT=%.17g  'BEGIN{ sum = 0} {sum+=sprintf("%f",$8)} END{print ops " : " sum/NR}' >> /tmp/$$-lr
     else
-        grep -i "${Operations[$key]}" $1 | awk  -v ops="$key" -M -v PREC=100 -v CONVFMT=%.17g  'BEGIN{ sum = 0} {sum+=sprintf("%f",$9)} END{print ops " : " sum/NR}'  >> /tmp/$$-lr
+        grep -i "${Operations[$key]}" $1 | awk  -v ops="$key"  -v PREC=100 -v CONVFMT=%.17g  'BEGIN{ sum = 0} {sum+=sprintf("%f",$9)} END{print ops " : " sum/NR}'  >> /tmp/$$-lr
     fi
 done
 
