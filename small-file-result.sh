@@ -14,9 +14,9 @@ for (( i = 0; i < ${#Operations[@]} ; i++ ))
 do
     if [ "${Operations[$i]}"  = "read" -o "${Operations[$i]}"  = "delete-renamed" -o "${Operations[$i]}" = "mkdir" -o "${Operations[$i]}" = "rmdir" ]
     then
-        egrep -i "operation|^files/sec" $1 | grep -A 1 -i "${Operations[$i]}" | grep -i files | awk  -v ops=$(echo "${Operations[$i]}" | tr -d ' :') -M -v PREC=100 -v CONVFMT=%.17g  'BEGIN{ sum = 0} {sum+=sprintf("%f",$3)} END{print ops ": " sum/NR}'
+        egrep -i "operation|^files/sec" $1 | grep -A 1 -i "${Operations[$i]}" | grep -i files | awk  -v ops=$(echo "${Operations[$i]}" | tr -d ' :')  -v PREC=100 -v CONVFMT=%.17g  'BEGIN{ sum = 0} {sum+=sprintf("%f",$3)} END{print ops ": " sum/NR}'
     else
-        egrep -i "operation|^files/sec" $1 | grep -A 1 -i "${Operations[$i]}" | grep -i files | tail -n +2 | awk  -v ops=$(echo "${Operations[$i]}" | tr -d ' :') -M -v PREC=100 -v CONVFMT=%.17g  'BEGIN{ sum = 0} {sum+=sprintf("%f",$3)} END{print ops ": " sum/NR}'
+        egrep -i "operation|^files/sec" $1 | grep -A 1 -i "${Operations[$i]}" | grep -i files | tail -n +2 | awk  -v ops=$(echo "${Operations[$i]}" | tr -d ' :')  -v PREC=100 -v CONVFMT=%.17g  'BEGIN{ sum = 0} {sum+=sprintf("%f",$3)} END{print ops ": " sum/NR}'
     fi
 done
 
