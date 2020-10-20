@@ -1,0 +1,15 @@
+
+[global]
+ioengine=libaio
+iodepth=8
+rw=randread
+direct=1
+bs=8k
+directory=/gluster-mount/
+filename_format=f.$jobnum.$filenum
+filesize=8g
+time_based=1
+runtime=60
+numjobs=8
+
+[randomread]

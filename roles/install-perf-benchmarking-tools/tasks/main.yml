@@ -11,8 +11,29 @@
     dest: /small-files/smallfile
     depth: 1
     version: e8e7bf5f658664d2a2b0a2f5c8c7beb4b20cd704
+  when: tool == "smallfile"
 
 - name: Installing Iozone
   yum:
     name: https://www.rpmfind.net/linux/dag/redhat/el7/en/x86_64/dag/RPMS/iozone-3.424-2.el7.rf.x86_64.rpm
     state: present
+  when: tool == "iozone"
+
+- name: Install fio
+  yum:
+    name: [ 'fio' ]
+    state: present
+  retries: 10
+  delay: 5
+  when: tool == "fio"
+
+- name: Start fio daemon on all clients
+  shell: "fio --server --daemonize=/var/run/fio-svr.pid"
+  when: tool == "fio"
+
+- name: Create config scripts
+  template:
+    src: templates/client-list.j2
+    dest: /root/client.list
+    mode: '0644'
+  when: tool == "fio"

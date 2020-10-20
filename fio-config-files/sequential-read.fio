@@ -1,0 +1,12 @@
+
+[global]
+ioengine=sync
+rw=read
+direct=0
+bs=64k
+directory=/gluster-mount/
+filename_format=f.$jobnum.$filenum
+filesize=8g
+numjobs=8
+
+[sequentialread]

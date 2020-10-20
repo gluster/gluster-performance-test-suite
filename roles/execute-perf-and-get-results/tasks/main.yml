@@ -11,7 +11,12 @@
     - sync-and-drop-cache.yml
     - ansible.cfg
     - largefile-test-for-fuse.sh
+    - largefile-test-for-fuse-with-fio.sh
     - collect-info.sh
+    - fio-config-files/sequential-read.fio
+    - fio-config-files/sequential-write.fio
+    - fio-config-files/random-read.fio
+    - fio-config-files/random-write.fio
 
 - name: Copy inventroy file with the name hosts
   copy:
@@ -52,9 +57,11 @@
     - /root/fuse-smallfile-result.txt
     - /root/fuse-smallfile-profile
     - /root/fuse-smallfile-profile.tar
-    - /root/fuse-largefile-result.txt
+    - /root/fuse-iozone-result.txt
     - /root/fuse-largefile-profile-iozone
     - /root/fuse-largefile-profile-iozone.tar
+    - /root/fuse-fio-result.tar
+    - /root/fuse-fio-output.txt
 
 - name: Run smallfile test
   shell: "/root/smallfile-test-for-fuse.sh \"{{node0}}\"  > /root/fuse-smallfile-result.txt 2>&1"
@@ -64,11 +71,18 @@
   when: tool == "smallfile"
 
 - name: Run largefile test using izone
-  shell: "/root/largefile-test-for-fuse.sh \"{{node0}}\" \"{{total_number_of_threads}}\" > /root/fuse-largefile-result.txt 2>&1"
+  shell: "/root/largefile-test-for-fuse.sh \"{{node0}}\" \"{{total_number_of_threads}}\" > /root/fuse-iozone-result.txt 2>&1"
   async: 32400                                 # waiting for 9 hours for test to complete, if it finishes early poll will detect that and report
   poll: 900
   register: perf_test
   when: tool == "iozone"
+
+- name: Run largefile test using fio
+  shell: "/root/largefile-test-for-fuse-with-fio.sh \"{{node0}}\"  > /root/fuse-fio-output.txt 2>&1"
+  async: 32400                                 # waiting for 9 hours for test to complete, if it finishes early poll will detect that and report
+  poll: 900
+  register: perf_test
+  when: tool == "fio"
 
 - name: fetch a file from remote machine
   fetch:
@@ -79,6 +93,7 @@
     - /root/fuse-smallfile-result.txt
     - /root/PerfTest.log
     - /root/fuse-smallfile-profile.tar
-    - /root/fuse-largefile-result.txt
+    - /root/fuse-iozone-result.txt
+    - /root/fuse-fio-result.tar
     - /root/fuse-largefile-profile-iozone.tar
   ignore_errors: yes
