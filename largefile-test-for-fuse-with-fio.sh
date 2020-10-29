@@ -24,7 +24,7 @@ do
     for Test in "${TestCase[@]}"
     do
         rm -rf ${Test}.${Run}.txt
-    done 
+    done
 done
 
 for((Run=0; Run<=4; Run++))
