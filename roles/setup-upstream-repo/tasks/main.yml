@@ -8,11 +8,11 @@
     gpgcheck: no
     keepalive: yes
 
-- name: Configure Gluster master nightly repo
+- name: Configure Gluster devel nightly repo
   yum_repository:
-    name: "gluster-nightly-master"
-    description: "Gluster Nightly builds (master branch)"
-    baseurl: "http://artifacts.ci.centos.org/gluster/nightly/master/7/x86_64"
+    name: "gluster-nightly-devel"
+    description: "Gluster Nightly builds (devel branch)"
+    baseurl: "http://artifacts.ci.centos.org/gluster/nightly/devel/7/x86_64"
     gpgcheck: false
     repo_gpgcheck: false
     keepalive: yes
