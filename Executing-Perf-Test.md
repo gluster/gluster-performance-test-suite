@@ -194,10 +194,10 @@ Once the test is done you should be having the following files created on your c
 * fuse-iozone-result.txt
 * PerfTest.log
 
-You can run the small-file-result.sh to extract the results as follows:
+You can run the extract-smallfile-results.sh to extract the results as follows:
 
 ```
-$ ./small-file-result.sh ~/config-for-cluster1/results/fuse-smallfile-result.txt
+$ ./extract-smallfile-results.sh ~/config-for-cluster1/results/fuse-smallfile-result.txt
 create: 2636.48441375
 ls-l: 8807.125541
 chmod: 1736.76129275
@@ -211,10 +211,10 @@ rmdir: 464.1749462
 cleanup: 5541.57562475
 ```
 
-You can run the large-result-iozone.sh to extract the results as follows , note that here we have given the numbers of threads as 16, you can specify this as (number of clients * 4), so if you have 6 clients then the number would be 24.
+You can run the extract-iozone-results.sh to extract the results as follows , note that here we have given the numbers of threads as 16, you can specify this as (number of clients * 4), so if you have 6 clients then the number would be 24.
 
 ```
-$ ./large-result-iozone.sh ~/config-for-cluster1/results/fuse-iozone-result.txt 16
+$ ./extract-iozone-results.sh ~/config-for-cluster1/results/fuse-iozone-result.txt 16
 seq-write : 62147.61
 seq-read : 228799.186
 random-write : 64242.22

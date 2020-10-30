@@ -4,7 +4,7 @@ if [ $# -ne 5  ]
 then
     echo; echo "Usage: $0 <script-to-extracts-the-result> <Baseline result> <Baseline log file> <Current results> <Current log file>"
     echo; echo "eg:"
-    echo; echo "    # $0 ./small-file-result.sh ~/config-for-cluster1/BaseLine-fuse-smallfile-result.txt ~/config-for-cluster1/BaselinePerfTest.log ./results/fuse-smallfile-result.txt ./results/PerfTest.log"
+    echo; echo "    # $0 ./extract-smallfile-results.sh ~/config-for-cluster1/BaseLine-fuse-smallfile-result.txt ~/config-for-cluster1/BaselinePerfTest.log ./results/fuse-smallfile-result.txt ./results/PerfTest.log"
     exit
 fi
 
