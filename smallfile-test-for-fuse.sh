@@ -16,6 +16,7 @@ ServerNode=$1
 ssh root@$ServerNode "echo Smallfile TestStarts > /var/log/PerfTest.log  2>&1"
 scp /root/collect-info.sh root@$ServerNode:/tmp/
 ssh root@$ServerNode "/tmp/collect-info.sh >> /var/log/PerfTest.log  2>&1"
+ssh root@$ServerNode "gluster volume info >> /var/log/PerfTest.log 2>&1"
 
 cd /root/
 

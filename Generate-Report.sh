@@ -18,13 +18,31 @@ BaselineExtractedResult="/tmp/$$-Baseline.txt"
 Table="/tmp/$$-Report.txt"
 TableWithoutHeadersForAnalysisOfStatus="/tmp/$$-Report-without-header.txt"
 
+# Check if comparison is between same type of volumes
+BaselineVolumeType=$(grep "Type:" $BaselineLog |tr -dc '[[:print:]]')       # here tr command will remove any non-printable characters
+CurrentVolumeType=$(grep "Type:" $CurrentLog | tr -dc '[[:print:]]' )
+BaselineNumberOfBricks=$(grep "Number of Bricks:" $BaselineLog | tr -dc '[[:print:]]')
+CurrentNumberOfBricks=$(grep "Number of Bricks:" $CurrentLog | tr -dc '[[:print:]]')
+
+if [[ "${BaselineVolumeType}" != "${CurrentVolumeType}" ]] || [[ "${BaselineNumberOfBricks}" != "${CurrentNumberOfBricks}" ]]
+then
+  echo "Volumes are not same"
+  exit 1
+fi
+
+
+
 # Extract the results of the current test and Baseline test
 $Extractor $BaselineResult > $BaselineExtractedResult
 $Extractor $CurrentResult > $CurrentExtractedResult
 
 # Get the New and the Old gluster version from the PerfTest.log file
-CurrentGlusterVersion=$(grep 'glusterfs-server-' $CurrentLog | sed 's/server-//g' | awk 'BEGIN { FS="."; }  { print $1 }')
-BaselineGlusterVersion=$(grep 'glusterfs-server-' $BaselineLog | sed 's/server-//g' | awk 'BEGIN { FS="."; }  { print $1 }')
+Temp=$(grep 'glusterfs-server-' $CurrentLog | sed 's/server-//g' )
+CurrentGlusterVersion=${Temp::-11}     # delete trailing characters
+Temp=$(grep 'glusterfs-server-' $BaselineLog | sed 's/server-//g' )
+BaselineGlusterVersion=${Temp::-11}    # delete trailing characters
+
+
 
 # Create a table
 echo "=============================================================================================================
