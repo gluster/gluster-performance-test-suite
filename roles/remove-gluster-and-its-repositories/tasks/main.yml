@@ -31,7 +31,7 @@
     state: absent
   with_items:
     - epel
-    - gluster-nightly-master
+    - gluster-nightly-devel
     - glusterlocal
 
 - name: clean yum cache
