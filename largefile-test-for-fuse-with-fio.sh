@@ -16,6 +16,7 @@ TestCase=("sequential-write" "sequential-read" "random-write" "random-read")
 ssh root@$ServerNode "echo Largefile using fio TestStarts > /var/log/PerfTest.log  2>&1"
 scp /tmp/collect-info.sh root@$ServerNode:/tmp/
 ssh root@$ServerNode "/tmp/collect-info.sh >> /var/log/PerfTest.log  2>&1"
+ssh root@$ServerNode "gluster volume info >> /var/log/PerfTest.log 2>&1"
 
 # cleanup of old test results, if present
 rm -rf /root/fuse-fio-result

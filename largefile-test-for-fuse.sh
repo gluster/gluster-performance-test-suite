@@ -19,6 +19,8 @@ TestName=("sequential-write-rewrite" "sequential-read-reread" "random-read-write
 ssh root@$ServerNode "echo Largefile using Iozone TestStarts > /var/log/PerfTest.log  2>&1"
 scp /tmp/collect-info.sh root@$ServerNode:/tmp/
 ssh root@$ServerNode "/tmp/collect-info.sh >> /var/log/PerfTest.log  2>&1"
+ssh root@$ServerNode "gluster volume info >> /var/log/PerfTest.log 2>&1"
+
 
 for((i=0; i<=4; i++))
 do
