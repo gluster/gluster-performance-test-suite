@@ -1,18 +1,17 @@
 #!/bin/bash
 
-if [ $# -ne 2  ]
+if [ $# -ne 1  ]
 then
-  echo; echo "Usage: $0 <result to be analyzed> <number of threads>"
+  echo; echo "Usage: $0 <result to be analyzed>"
   echo; echo "eg:"
-  echo; echo "    # $0 fuse-mount-large-file-result.txt 16"
+  echo; echo "    # $0 fuse-mount-large-file-result.txt"
   exit
 fi
 
-NoOfThreads=$2
 
 declare -A Operations
 
-Operations=( ["seq-write"]="initial writers" ["seq-read"]="$NoOfThreads readers" ["random-read"]="random readers"  ["random-write"]="random writers" )
+Operations=( ["seq-write"]="initial writers" ["seq-read"]="[0-9][0-9] readers" ["random-read"]="random readers"  ["random-write"]="random writers" )
 
 for key in ${!Operations[@]}
 do
