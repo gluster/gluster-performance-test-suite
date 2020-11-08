@@ -1,18 +1,34 @@
 ---
+- name: Gather required facts
+  setup:
+    gather_subset:
+      - '!all'
+      - 'ohai'
+
 - name: Add EPEL repository
+  vars:
+    config:
+      "8": "https://mirrors.fedoraproject.org/metalink?repo=epel-$releasever&arch=$basearch&infra=$infra&content=$contentdir"
+      "7": "https://mirrors.fedoraproject.org/mirrorlist?repo=epel-7&arch=$basearch"
   yum_repository:
     name: epel
     description: EPEL YUM repo
-    mirrorlist: https://mirrors.fedoraproject.org/mirrorlist?repo=epel-7&arch=$basearch
+    mirrorlist: "{{ config[ansible_distribution_major_version] }}"
     enabled: yes
     gpgcheck: no
     keepalive: yes
+  when: ansible_distribution == "RedHat"
 
 - name: Configure Gluster devel nightly repo
+  vars:
+    nightly:
+      "8": "http://artifacts.ci.centos.org/gluster/nightly/devel/8/x86_64"
+      "7": "http://artifacts.ci.centos.org/gluster/nightly/devel/7/x86_64"
   yum_repository:
     name: "gluster-nightly-devel"
     description: "Gluster Nightly builds (devel branch)"
-    baseurl: "http://artifacts.ci.centos.org/gluster/nightly/devel/7/x86_64"
+    baseurl: "{{ nightly[ansible_distribution_major_version] }}"
     gpgcheck: false
     repo_gpgcheck: false
     keepalive: yes
+  when: ansible_distribution == "RedHat"
