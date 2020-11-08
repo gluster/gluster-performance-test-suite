@@ -1,12 +1,23 @@
 ---
+- name: Gather required facts
+  setup:
+    gather_subset:
+      - '!all'
+      - 'ohai'
+
 - name: Add EPEL repository
+  vars:
+    config:
+      "8": "https://mirrors.fedoraproject.org/metalink?repo=epel-$releasever&arch=$basearch&infra=$infra&content=$contentdir"
+      "7": "https://mirrors.fedoraproject.org/mirrorlist?repo=epel-7&arch=$basearch"
   yum_repository:
     name: epel
     description: EPEL YUM repo
-    mirrorlist: https://mirrors.fedoraproject.org/mirrorlist?repo=epel-7&arch=$basearch
+    mirrorlist: "{{ config[ansible_distribution_major_version] }}"
     enabled: yes
     gpgcheck: no
     keepalive: yes
+  when: ansible_distribution == "RedHat"
 
 - name: Install wget
   yum:
