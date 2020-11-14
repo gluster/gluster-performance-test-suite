@@ -1,7 +1,7 @@
 ---
 - name: Install glusterfs-fuse
   yum:
-    name: [ 'glusterfs-fuse', 'git' ]
+    name: [ 'glusterfs-fuse', 'git' , 'python3' ]
     state: present
   retries: 10
   delay: 5
@@ -23,6 +23,19 @@
     state: link
   when: inventory_hostname == groups['master_client'].0
   ignore_errors: yes
+
+- name: create a symlink for python3
+  file:
+    src: /usr/bin/python3
+    dest: /usr/bin/python
+    owner: root
+    group: root
+    state: link
+  ignore_errors: yes
+
+- name: waiting
+  pause:
+    prompt: Check if above python3 installation was successfull
 
 - name: distribute the ssh key to the remote hosts
   shell: "/usr/bin/sshpass -p \"{{ remote_machine_password }}\" ssh-copy-id -f -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/{{ ssh_key_filename }}.pub  \"{{ remote_machine_username }}@{{ item }}\""
