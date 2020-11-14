@@ -58,7 +58,7 @@
     - { role: setup-upstream-repo, when: build == "upstream" }
 
 - name: Subscribe to RHSM
-  hosts: master_client
+  hosts: cluster_machines
   remote_user: root
   gather_facts: no
   vars_files:

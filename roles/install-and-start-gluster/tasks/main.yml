@@ -1,7 +1,7 @@
 ---
 - name: Install Gluster and additional packages on servers
   yum:
-    name: ['python3', 'policycoreutils-python', 'glusterfs-server', 'glusterfs-fuse', 'glusterfs-api' ]
+    name: ['python3',  'glusterfs-server', 'glusterfs-fuse', 'glusterfs-api' ]
     state: present
   retries: 10
   delay: 5
