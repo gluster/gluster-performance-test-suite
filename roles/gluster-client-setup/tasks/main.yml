@@ -33,10 +33,6 @@
     state: link
   ignore_errors: yes
 
-- name: waiting
-  pause:
-    prompt: Check if above python3 installation was successfull
-
 - name: distribute the ssh key to the remote hosts
   shell: "/usr/bin/sshpass -p \"{{ remote_machine_password }}\" ssh-copy-id -f -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/{{ ssh_key_filename }}.pub  \"{{ remote_machine_username }}@{{ item }}\""
   register: ssh_copy_id_execution
