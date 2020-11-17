@@ -11,7 +11,8 @@ build="upstream"
 benchmarking_tools=0
 backend_variables=~/config-for-cluster1/cluster1-backend-vars.yml
 cleanup_vars=~/config-for-cluster1/cluster1-cleanup-vars.yml
-#rhsm_vars=./rhsm-vars.yml
+rhsm_vars=~/config-for-cluster1/rhsm-vars.yml
+use_rhsm_repository=0
 tool="smallfile"
 download_results_at_location=~/config-for-cluster1/
 
