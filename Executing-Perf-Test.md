@@ -145,7 +145,8 @@ build="upstream"
 benchmarking_tools=0
 backend_variables=~/config-for-cluster1/cluster1-backend-vars.yml
 cleanup_vars=~/config-for-cluster1/cluster1-cleanup-vars.yml
-#rhsm_vars=~/config-for-cluster1/rhsm-vars.yml
+rhsm_vars=~/config-for-cluster1/rhsm-vars.yml
+use_rhsm_repository=0
 tool="smallfile"
 download_results_at_location=~/config-for-cluster1/
 
@@ -211,10 +212,10 @@ rmdir: 464.1749462
 cleanup: 5541.57562475
 ```
 
-You can run the extract-iozone-results.sh to extract the results as follows , note that here we have given the numbers of threads as 16, you can specify this as (number of clients * 4), so if you have 6 clients then the number would be 24.
+You can run the extract-iozone-results.sh to extract the results as follows:
 
 ```
-$ ./extract-iozone-results.sh ~/config-for-cluster1/results/fuse-iozone-result.txt 16
+$ ./extract-iozone-results.sh ~/config-for-cluster1/results/fuse-iozone-result.txt
 seq-write : 62147.61
 seq-read : 228799.186
 random-write : 64242.22

@@ -64,7 +64,7 @@
   vars_files:
     - "{{ rhsm_vars }}"
   roles:
-    - { role: gluster.repos,  when: rhsm_vars is defined }
+    - { role: gluster.repos,  when: use_rhsm_repository|int == 1 }
 
 - name: Setup custom build repository
   hosts: cluster_machines
