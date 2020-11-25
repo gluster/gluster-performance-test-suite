@@ -18,7 +18,7 @@
 
 - name: Install additional packages on master client
   yum:
-    name: [ 'sshpass', 'ansible' ]
+    name: [ 'sshpass', 'ansible', 'tar' ]
     state: present
   retries: 10
   delay: 5
