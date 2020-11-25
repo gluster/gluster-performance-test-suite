@@ -17,7 +17,7 @@ Options=( "-i 0 -s 8g" "-i 1 -s 8g" "-i 2 -s 2g -J 3 -I" )
 TestName=("sequential-write-rewrite" "sequential-read-reread" "random-read-write" )
 
 ssh root@$ServerNode "echo Largefile using Iozone TestStarts > /var/log/PerfTest.log  2>&1"
-scp /tmp/collect-info.sh root@$ServerNode:/tmp/
+scp /root/collect-info.sh root@$ServerNode:/tmp/
 ssh root@$ServerNode "/tmp/collect-info.sh >> /var/log/PerfTest.log  2>&1"
 ssh root@$ServerNode "gluster volume info >> /var/log/PerfTest.log 2>&1"
 
