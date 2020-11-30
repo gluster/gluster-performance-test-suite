@@ -120,9 +120,7 @@
   pre_tasks:
     - name: setting appropriate gluster options for smallfile
       set_fact:
-        gluster_cluster_options: "{{ gluster_cluster_options | combine({'server.event-threads': '4'})}}"
-        gluster_cluster_options: "{{ gluster_cluster_options | combine({'client.event-threads:': '4'})}}"
-        gluster_cluster_options: "{{ gluster_cluster_options | combine({'cluster.lookup-optimize': 'on'})}}"
+        gluster_cluster_options: "{{ gluster_cluster_options | combine({'server.event-threads': '4', 'client.event-threads': '4', 'cluster.lookup-optimize': 'on'})}}"
       when: tool == "smallfile"
 
   roles:
