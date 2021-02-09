@@ -26,8 +26,7 @@ CurrentNumberOfBricks=$(grep "Number of Bricks:" $CurrentLog | tr -dc '[[:print:
 
 if [[ "${BaselineVolumeType}" != "${CurrentVolumeType}" ]] || [[ "${BaselineNumberOfBricks}" != "${CurrentNumberOfBricks}" ]]
 then
-  echo "Volumes are not same"
-  exit 1
+  echo "Warning: Volumes are not same"
 fi
 
 
@@ -37,12 +36,11 @@ $Extractor $BaselineResult > $BaselineExtractedResult
 $Extractor $CurrentResult > $CurrentExtractedResult
 
 # Get the New and the Old gluster version from the PerfTest.log file
-Temp=$(grep 'glusterfs-server-' $CurrentLog | sed 's/server-//g' )
+Temp=$(grep 'glusterfs-server-' $CurrentLog | head -1 | sed 's/server-//g' )
 CurrentGlusterVersion=${Temp::-11}     # delete trailing characters
-Temp=$(grep 'glusterfs-server-' $BaselineLog | sed 's/server-//g' )
+Temp=$(grep 'glusterfs-server-' $BaselineLog| head -1 | sed 's/server-//g' )
 BaselineGlusterVersion=${Temp::-11}    # delete trailing characters
-
-
+echo "CurrentGlusterVersion=$CurrentGlusterVersion" >> env.properties
 
 # Create a table
 echo "=============================================================================================================
@@ -62,8 +60,11 @@ regression=$(awk  '$4 < -5  { print $4 }' $TableWithoutHeadersForAnalysisOfStatu
 if [ "$regression" ]
 then
   status="FAIL"
+  echo "STATUS=$status" >> env.properties
 else
   status="PASS"
+  echo "STATUS=$status" >> env.properties
 fi
 
 cat "$Table"
+cat "$Table" > /tmp/perf_result.txt
