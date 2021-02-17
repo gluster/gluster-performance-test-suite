@@ -152,6 +152,23 @@
   roles:
     - execute-perf-and-get-results
 
+- name: Fetch pcplogs from all the machines
+  hosts: cluster_machines
+  remote_user: root
+  tasks:
+    - name: Find pcplogs
+      find :
+        paths: /var/log/pcp/pmlogger/
+        recurse: yes
+      register: files_to_copy
+
+    - name: Get pcplogs
+      fetch:
+        src: "{{ item.path }}"
+        dest: "{{ download_results_at_location }}/results/pcplogs"
+      with_items: "{{ files_to_copy.files }}"
+      ignore_errors: yes
+
 - name: delete the ssh key if specifically asked
   hosts: control_machine
   tasks:
