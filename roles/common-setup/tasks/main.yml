@@ -17,3 +17,19 @@
     line: 'tstflags=nodocs'
   when: ansible_distribution == "RedHat"
 
+- name: Install pcp
+  yum:
+    name: ['pcp-zeroconf']
+    state: present
+  retries: 10
+  delay: 5
+
+- name: Start pcp services
+  systemd:
+    name: "{{ item }}"
+    daemon_reload: yes
+    state: restarted
+  with_items:
+   - 'pmcd'
+   - 'pmlogger'
+
