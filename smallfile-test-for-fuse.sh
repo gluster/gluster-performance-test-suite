@@ -14,6 +14,7 @@ fi
 ServerNode=$1
 
 ssh root@$ServerNode "echo Smallfile TestStarts > /var/log/PerfTest.log  2>&1"
+ssh root@$ServerNode "date >> /var/log/PerfTest.log  2>&1"
 scp /root/collect-info.sh root@$ServerNode:/tmp/
 ssh root@$ServerNode "/tmp/collect-info.sh >> /var/log/PerfTest.log  2>&1"
 ssh root@$ServerNode "gluster volume info >> /var/log/PerfTest.log 2>&1"
@@ -42,6 +43,7 @@ ssh root@$ServerNode "gluster volume info  > /root/volume-info.txt"
 scp root@$ServerNode:/root/*.txt /root/fuse-smallfile-profile/
 tar cf fuse-smallfile-profile.tar fuse-smallfile-profile
 ssh root@$ServerNode "echo Testover  >> /var/log/PerfTest.log  2>&1"
+ssh root@$ServerNode "date >> /var/log/PerfTest.log  2>&1"
 scp root@$ServerNode:/var/log/PerfTest.log /root/
 
 # Log the client config
