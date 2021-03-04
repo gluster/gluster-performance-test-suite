@@ -221,3 +221,12 @@ seq-read : 228799.186
 random-write : 64242.22
 random-read : 109241.69
 ```
+You can run the extract-fio-results.sh to extract the results as follows (**Note the input file is a tar file in this case** ):
+
+```
+# ./extract-fio-results.sh ./fuse-fio-result.tar
+random-write : 68.42
+random-read : 24.56
+sequential-read : 191.40
+sequential-write : 75.84
+```

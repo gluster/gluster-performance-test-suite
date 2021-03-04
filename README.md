@@ -25,7 +25,7 @@ Role Variables
 |  cleanup_vars   | UNDEF     | Path to yaml file where cleanup variables are defined. The file cleanup-vars.sample from the repository, can be copied and changed based on the current configuration of your cluster. |
 |  rhsm_vars   | UNDEF     | Path to yaml file where rhsm_vars variables are defined. The file rhsm_vars.sample from the repository, can be copied and changed. |
 |  use_rhsm_repository | UNDEF     | if you don't want to use rhsm repository then set this variable to 0 else set it to 1. |
-|  tool   | UNDEF     | The benchmarking tool that we need to use to do the test. This can be "smallfile" or "iozone". |
+|  tool   | UNDEF     | The benchmarking tool that we need to use to do the test. This can be "smallfile" or "iozone" or "fio". |
 | download_results_at_location  | UNDEF  | location where the results should be downloaded once the test is completed. |
 
 ### **Note:** If single place for all variables is desired then all the variables can be put in just one file and its path specified in backend_variables, cleanup_vars and rhsm_vars
