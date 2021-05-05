@@ -66,21 +66,21 @@
 - name: Run smallfile test
   shell: "/root/smallfile-test-for-fuse.sh \"{{node0}}\"  > /root/fuse-smallfile-result.txt 2>&1"
   async: 32400                                 # waiting for 9 hours for test to complete, if it finishes early poll will detect that and report
-  poll: 900
+  poll: 60
   register: perf_test
   when: tool == "smallfile"
 
 - name: Run largefile test using izone
   shell: "/root/largefile-test-for-fuse.sh \"{{node0}}\" \"{{total_number_of_threads}}\" > /root/fuse-iozone-result.txt 2>&1"
   async: 32400                                 # waiting for 9 hours for test to complete, if it finishes early poll will detect that and report
-  poll: 900
+  poll: 60
   register: perf_test
   when: tool == "iozone"
 
 - name: Run largefile test using fio
   shell: "/root/largefile-test-for-fuse-with-fio.sh \"{{node0}}\"  > /root/fuse-fio-output.txt 2>&1"
   async: 32400                                 # waiting for 9 hours for test to complete, if it finishes early poll will detect that and report
-  poll: 900
+  poll: 60
   register: perf_test
   when: tool == "fio"
 
