@@ -27,6 +27,7 @@ Role Variables
 |  use_rhsm_repository | UNDEF     | if you don't want to use rhsm repository then set this variable to 0 else set it to 1. |
 |  tool   | UNDEF     | The benchmarking tool that we need to use to do the test. This can be "smallfile" or "iozone" or "fio". |
 | download_results_at_location  | UNDEF  | location where the results should be downloaded once the test is completed. |
+| collect_pcplog   | UNDEF     | When set it will installa and collect the pcp logs. |
 
 ### **Note:** If single place for all variables is desired then all the variables can be put in just one file and its path specified in backend_variables, cleanup_vars and rhsm_vars
 

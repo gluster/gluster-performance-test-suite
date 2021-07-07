@@ -161,6 +161,7 @@
         paths: /var/log/pcp/pmlogger/
         recurse: yes
       register: files_to_copy
+      when: collect_pcplog|int == 1
 
     - name: Get pcplogs
       fetch:
@@ -168,6 +169,7 @@
         dest: "{{ download_results_at_location }}/results/pcplogs"
       with_items: "{{ files_to_copy.files }}"
       ignore_errors: yes
+      when: collect_pcplog|int == 1
 
 - name: delete the ssh key if specifically asked
   hosts: control_machine
