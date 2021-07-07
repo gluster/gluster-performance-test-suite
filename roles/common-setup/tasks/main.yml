@@ -23,6 +23,7 @@
     state: present
   retries: 10
   delay: 5
+  when: collect_pcplog|int == 1
 
 - name: Start pcp services
   systemd:
@@ -32,4 +33,5 @@
   with_items:
    - 'pmcd'
    - 'pmlogger'
+  when: collect_pcplog|int == 1
 
