@@ -98,6 +98,7 @@
        - 5900-6923/tcp
        - 5666/tcp
        - 16514/tcp
+       - 49152-60999/tcp
      gluster_infra_fw_services:
        - glusterfs
        - samba
